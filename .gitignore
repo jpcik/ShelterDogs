@@ -1,0 +1,11 @@
+*.class
+*.log
+target/
+.settings/
+.classpath
+.project
+bin/
+output/
+project/boot/
+test-suite/
+.cache
