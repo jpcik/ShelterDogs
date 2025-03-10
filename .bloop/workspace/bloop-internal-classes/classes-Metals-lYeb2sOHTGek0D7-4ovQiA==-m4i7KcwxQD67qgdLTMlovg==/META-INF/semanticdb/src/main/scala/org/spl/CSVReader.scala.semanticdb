@@ -1,0 +1,12 @@
+
+Õ&src/main/scala/org/spl/CSVReader.scala2
+ scala/2
+ 	scala/io/2
+ scala/io/Source.2
+ scala/io/Source#2
+ org/2
+ org/spl/:ñ
+ æNo class, trait or object is defined in the compilation unit.
+The incremental compiler cannot record the dependency information in such case.
+Some errors like unused import referring to a non-existent class might not be reported.
+PZ 5F9062D72EE23E74CE4DE3FFB4FFF982

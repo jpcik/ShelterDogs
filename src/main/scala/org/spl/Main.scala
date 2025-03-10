@@ -22,6 +22,23 @@ def parseBoolean(value: String): Option[Boolean] =
 def parseString(value: String): Option[String] =
     if value.isEmpty then None else Some(value)
 
+def parseList(value: String): List[String] =
+    // split string by comma and remove leading/trailing whitespaces
+    value.split(",").map(_.trim).toList
+
+def parseIntFloat(value: String): Int | Float =
+    if value.contains(".") then value.toFloat else value.toInt
+
+// Generic function to parse an enumeration generic type E restricted to only be an Enumeration
+def parseEnum[E <: Enumeration](value: String, my_enum: E): Option[my_enum.Value] =
+    if value.isEmpty then 
+        None
+    else 
+        Some(my_enum.withName(toSnakeCase(value)))
+
+def toSnakeCase(value: String): String =
+    value.replaceAll("([a-z0-9])([A-Z])", "$1_$2").replace(" ", "_").toLowerCase
+
 def loadDogsFromCSV(csvPath: String): List[Dog] =
     val reader = new InputStreamReader(new FileInputStream(csvPath), "UTF-8")
     val parser = CSVFormat.DEFAULT
@@ -36,15 +53,15 @@ def loadDogsFromCSV(csvPath: String): List[Dog] =
         Some(Dog(
             ID = record.get("ID").toInt,
             name = parseString(record.get("name")),
-            age = record.get("age").toFloat,
-            sex = if (record.get("sex") == "male") Sex.Male else Sex.Female,
-            breed = parseString(record.get("breed")),
+            age = parseIntFloat(record.get("age")),
+            sex = parseEnum(record.get("sex"), Sex).get, // sex is always set in data 
+            breed = parseList(record.get("breed")),
             date_found = parseDate(record.get("date_found")),
             adoptable_from = parseDate(record.get("adoptable_from")),
             posted = parseDate(record.get("posted")),
             color = parseString(record.get("color")),
-            coat = parseString(record.get("coat")),
-            size = parseString(record.get("size")),
+            coat = parseEnum(record.get("coat"), Coat).get, // coat is always set in data 
+            size = parseEnum(record.get("size"), Size).get, // size is always set in data 
             neutered = parseBoolean(record.get("neutered")),
             housebroken = parseBoolean(record.get("housebroken")),
             likes_people = parseBoolean(record.get("likes_people")),
@@ -52,15 +69,15 @@ def loadDogsFromCSV(csvPath: String): List[Dog] =
             get_along_males = parseBoolean(record.get("get_along_males")),
             get_along_females = parseBoolean(record.get("get_along_females")),
             get_along_cats = parseBoolean(record.get("get_along_cats")),
-            keep_in = parseString(record.get("keep_in"))
+            keep_in = parseEnum(record.get("keep_in"), KeepIn)
         ))
     }.toList
 
     reader.close()
     dogs
 @main def shelterDogs() = 
-    val shelter: List[Dog] = loadDogsFromCSV("./07-ShelterDogs.csv")
+    val shelter: List[Animal[Dog]] = loadDogsFromCSV("./07-ShelterDogs.csv") // works because Covariant of Animal
 
     shelter.foreach(println)
 
-    println(Dog.get_nb_days_in_shelter(shelter.head))
+    println(Dog.get_nb_days_in_shelter(shelter.head.asInstanceOf[Dog]))
