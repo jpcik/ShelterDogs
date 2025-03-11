@@ -6,9 +6,11 @@ import org.spl.Size.Size
 import org.spl.Coat.Coat
 import org.spl.KeepIn.KeepIn
 
-trait Adoptable:
+trait Adoptable{
     val adoptable_from: Date
+}
 
+//jpc: this are the old Enumerations, you can use the Scala 3 Enum are better
 object Sex extends Enumeration {
     type Sex = Value // type alias
     val female, male = Value
@@ -29,6 +31,8 @@ object KeepIn extends Enumeration {
     val flat, garden, both_flat_and_garden = Value
 }
 
+// jpc: why abstract class? not better to use a trait?
+// jpc: not clear why you need a type aprameter in this case. what is the meaning of T here?
 abstract class Animal[+T] ( // Covariant type parameter
     val ID: Int, 
     val name: Option[String], 
@@ -39,7 +43,7 @@ abstract class Animal[+T] ( // Covariant type parameter
     )
 
 case class Dog(override val ID: Int,
-    override val name: Option[String], 
+    override val name: Option[String],  //jpc: why override? not better to use a trait instead of abstract class?
     override val age: Int | Float, // Union type
     override val sex: Sex, 
     override val breed: List[String], 
