@@ -9,3 +9,17 @@ output/
 project/boot/
 test-suite/
 .cache
+.bsp/
+
+/target/
+/project/target/
+/project
+
+# Ignore metals & BSP (for Scala development in VS Code, IntelliJ)
+/.metals/
+/.bsp/
+/.worksheet/
+
+/.bloop/
+/.vscode/
+/.metals/
