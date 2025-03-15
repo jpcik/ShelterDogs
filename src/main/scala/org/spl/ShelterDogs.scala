@@ -1,34 +1,25 @@
 package org.spl
 
 import java.util.Date
-import org.spl.Sex.Sex
-import org.spl.Size.Size
-import org.spl.Coat.Coat
-import org.spl.KeepIn.KeepIn
 
 trait Adoptable{
     val adoptable_from: Date
 }
 
-//jpc: this are the old Enumerations, you can use the Scala 3 Enum are better
-object Sex extends Enumeration {
-    type Sex = Value // type alias
-    val female, male = Value
+enum Sex extends Enum[Sex] {
+    case female, male
 }
 
-object Size extends Enumeration {
-    type Size = Value // type alias
-    val small, medium, large = Value
+enum Size extends Enum[Size] {
+    case small, medium, large
 }
 
-object Coat extends Enumeration {
-    type Coat = Value // type alias
-    val long, medium, short, wirehaired = Value
+enum Coat extends Enum[Coat] {
+    case long, medium, short, wirehaired
 }
 
-object KeepIn extends Enumeration {
-    type KeepIn = Value // type alias
-    val flat, garden, both_flat_and_garden = Value
+enum KeepIn extends Enum[KeepIn] {
+    case flat, garden, both_flat_and_garden
 }
 
 // jpc: why abstract class? not better to use a trait?

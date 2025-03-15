@@ -30,14 +30,11 @@ def parseIntFloat(value: String): Int | Float =
     if value.contains(".") then value.toFloat else value.toInt
 
 // Generic function to parse an enumeration generic type E restricted to only be an Enumeration
-def parseEnum[E <: Enumeration](value: String, my_enum: E): Option[my_enum.Value] =
-    if value.isEmpty then 
+def parseEnum[E <: Enum[E]](value: String, enumClass: Class[E]): Option[E] =
+    if value.isEmpty then
         None
     else 
-        Some(my_enum.withName(toSnakeCase(value)))
-
-def toSnakeCase(value: String): String =
-    value.replaceAll("([a-z0-9])([A-Z])", "$1_$2").replace(" ", "_").toLowerCase
+        enumClass.getEnumConstants.find(_.toString.equalsIgnoreCase(value))
 
 def loadDogsFromCSV(csvPath: String): List[Dog] =
     val reader = new InputStreamReader(new FileInputStream(csvPath), "UTF-8")
@@ -54,14 +51,14 @@ def loadDogsFromCSV(csvPath: String): List[Dog] =
             ID = record.get("ID").toInt,
             name = parseString(record.get("name")),
             age = parseIntFloat(record.get("age")),
-            sex = parseEnum(record.get("sex"), Sex).get, // sex is always set in data 
+            sex = parseEnum(record.get("sex"), classOf[Sex]).get, // sex is always set in data 
             breed = parseList(record.get("breed")),
             date_found = parseDate(record.get("date_found")),
             adoptable_from = parseDate(record.get("adoptable_from")),
             posted = parseDate(record.get("posted")),
             color = parseString(record.get("color")),
-            coat = parseEnum(record.get("coat"), Coat).get, // coat is always set in data 
-            size = parseEnum(record.get("size"), Size).get, // size is always set in data 
+            coat = parseEnum(record.get("coat"), classOf[Coat]).get, // coat is always set in data 
+            size = parseEnum(record.get("size"), classOf[Size]).get, // size is always set in data 
             neutered = parseBoolean(record.get("neutered")),
             housebroken = parseBoolean(record.get("housebroken")),
             likes_people = parseBoolean(record.get("likes_people")),
@@ -69,7 +66,7 @@ def loadDogsFromCSV(csvPath: String): List[Dog] =
             get_along_males = parseBoolean(record.get("get_along_males")),
             get_along_females = parseBoolean(record.get("get_along_females")),
             get_along_cats = parseBoolean(record.get("get_along_cats")),
-            keep_in = parseEnum(record.get("keep_in"), KeepIn)
+            keep_in = parseEnum(record.get("keep_in"), classOf[KeepIn])
         ))
     }.toList
 
