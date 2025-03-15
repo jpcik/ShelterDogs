@@ -29,7 +29,8 @@ def parseList(value: String): List[String] =
 def parseIntFloat(value: String): Int | Float =
     if value.contains(".") then value.toFloat else value.toInt
 
-// Generic function to parse an enumeration generic type E restricted to only be an Enumeration
+// Generic function to parse an enum with parameterized type E
+// E is restricted to be a subtype of Enum[E] to be able to use getEnumConstants
 def parseEnum[E <: Enum[E]](value: String, enumClass: Class[E]): Option[E] =
     if value.isEmpty then
         None
@@ -72,9 +73,16 @@ def loadDogsFromCSV(csvPath: String): List[Dog] =
 
     reader.close()
     dogs
+
+class Shelter[+A <: Animal](val animals: List[A]) { // Covariant
+    def getAllAnimals: List[A] = animals
+}
+
 @main def shelterDogs() = 
-    val shelter: List[Animal[Dog]] = loadDogsFromCSV("./07-ShelterDogs.csv") // works because Covariant of Animal
+    val dogsShelter: Shelter[Dog] = Shelter(loadDogsFromCSV("./07-ShelterDogs.csv"))
 
-    shelter.foreach(println)
+    val animalShelter: Shelter[Animal] = dogsShelter // works because Shelter is covariant
+    
+    animalShelter.getAllAnimals.foreach(println)
 
-    println(Dog.get_nb_days_in_shelter(shelter.head.asInstanceOf[Dog]))
+    println(Dog.get_nb_days_in_shelter(animalShelter.getAllAnimals.head.asInstanceOf[Dog]))
